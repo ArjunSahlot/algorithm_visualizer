@@ -6,9 +6,9 @@ import pygame
 ''' Constants '''
 pygame.init()
 WIDTH = 1000
-ROWS = 50 # Lower number for increased performance
+ROWS = 50  # Lower number for increased performance
 WINDOW = pygame.display.set_mode((WIDTH, WIDTH))
-pygame.display.set_caption("Path Finding Algorithm Visualizer, By: Arjun Sahlot")
+pygame.display.set_caption("Path Finding Algorithm Visualizer")
 font = pygame.font.SysFont('comicsans', 100)
 
 RED = (255, 0, 0)
@@ -18,10 +18,11 @@ ORANGE = (255, 140, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (128, 128, 128)
-BROWN = (110,50,10)
-
+BROWN = (110, 50, 10)
 
 ''' Functions/Classes/Gameloop '''
+
+
 class Node:
     def __init__(self, row, col, width, total_rows):
         self.row = row
@@ -101,12 +102,12 @@ def reconstruct_path(came_from, start, end, draw, current):
 def celldistance(point1, point2):
     x1, y1 = point1
     x2, y2 = point2
-    return abs(x2-x1) + abs(y2-y1)
+    return abs(x2 - x1) + abs(y2 - y1)
 
 
 def not_found_mesg(window, width):
     text = font.render("Path Not Found", 1, BLACK)
-    window.blit(text, (width//2 - text.get_width()//2, 100))
+    window.blit(text, (width // 2 - text.get_width() // 2, 100))
     pygame.display.update()
     time.sleep(2)
 
@@ -158,47 +159,47 @@ def bestfirst(window, draw, width, grid, start, end):
 
 
 def dijkstras(window, draw, width, grid, start, end):
-        count = 0
-        checked_set = PriorityQueue()
-        checked_set.put((0, count, start))
-        came_from = {}
-        g_score = {node: float("inf") for row in grid for node in row}
-        g_score[start] = 0
+    count = 0
+    checked_set = PriorityQueue()
+    checked_set.put((0, count, start))
+    came_from = {}
+    g_score = {node: float("inf") for row in grid for node in row}
+    g_score[start] = 0
 
-        checked_set_checker = {start}
+    checked_set_checker = {start}
 
-        while not checked_set.empty():
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+    while not checked_set.empty():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-            current = checked_set.get()[2]
-            # checked_set_checker.remove(current)
+        current = checked_set.get()[2]
+        # checked_set_checker.remove(current)
 
-            if current == end:
-                reconstruct_path(came_from, start, end, draw, current)
-                end.make_end()
-                return True
+        if current == end:
+            reconstruct_path(came_from, start, end, draw, current)
+            end.make_end()
+            return True
 
-            for neighbor in current.neighbors:
-                temp_g_score = g_score[current] + 1
+        for neighbor in current.neighbors:
+            temp_g_score = g_score[current] + 1
 
-                if temp_g_score < g_score[neighbor]:
-                    came_from[neighbor] = current
-                    g_score[neighbor] = temp_g_score
+            if temp_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = temp_g_score
 
-                    if neighbor not in checked_set_checker:
-                        count += 1
-                        checked_set.put((g_score[neighbor], count, neighbor))
-                        checked_set_checker.add(neighbor)
-                        neighbor.make_checked()
+                if neighbor not in checked_set_checker:
+                    count += 1
+                    checked_set.put((g_score[neighbor], count, neighbor))
+                    checked_set_checker.add(neighbor)
+                    neighbor.make_checked()
 
-            draw()
+        draw()
 
-            if current != start:
-                current.make_checking()
+        if current != start:
+            current.make_checking()
 
-        not_found_mesg(window, width)
+    not_found_mesg(window, width)
 
 
 def alphastar(window, draw, width, grid, start, end):
@@ -254,7 +255,7 @@ def make_grid(rows, width):
     for i in range(rows):
         grid.append([])
         for j in range(rows):
-            grid[i].append(Node(i,j,gap,rows))
+            grid[i].append(Node(i, j, gap, rows))
 
     return grid
 
@@ -262,9 +263,9 @@ def make_grid(rows, width):
 def draw_grid(window, rows, width):
     gap = width // rows
     for i in range(rows):
-        pygame.draw.line(window, GREY, (0, i*gap), (width, i*gap))
+        pygame.draw.line(window, GREY, (0, i * gap), (width, i * gap))
         for j in range(rows):
-            pygame.draw.line(window, GREY, (j*gap, 0), (j*gap, width))
+            pygame.draw.line(window, GREY, (j * gap, 0), (j * gap, width))
 
 
 def draw_window(window, grid, rows, width):
@@ -279,8 +280,8 @@ def draw_window(window, grid, rows, width):
 def click_pos(pos, rows, width):
     gap = width // rows
     x, y = pos
-    row = x // gap
-    col = y // gap
+    row = y // gap
+    col = x // gap
 
     return row, col
 
@@ -310,6 +311,7 @@ def main(window, rows, width):
                     end.make_end()
                 elif node != end and node != start:
                     node.make_barrier()
+
             elif pygame.mouse.get_pressed()[2]:
                 pos = pygame.mouse.get_pos()
                 row, col = click_pos(pos, rows, width)
@@ -343,7 +345,6 @@ def main(window, rows, width):
                     start = None
                     end = None
                     grid = make_grid(ROWS, width)
-
 
     pygame.quit()
 
